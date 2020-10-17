@@ -9,8 +9,7 @@ export default {
   components: {},
   props: {},
   data () {
-    return {
-    }
+    return {}
   },
   computed: {},
   watch: {},
@@ -19,5 +18,4 @@ export default {
   methods: {}
 }
 </script>
-<style lang="less" scoped>
-</style>
+<style lang="less" scoped></style>

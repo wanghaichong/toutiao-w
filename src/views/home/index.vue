@@ -9,33 +9,48 @@
     <!-- 通过 animated 属性可以开启切换标签内容时的转场动画。 -->
     <!-- 通过 swipeable 属性可以开启滑动切换标签页 -->
     <van-tabs class="channel-tabs" v-model="active" animated swipeable>
-      <van-tab :title="channel.name" v-for="channel in channels" :key="channel.id">
+      <van-tab :key="channel.id" :title="channel.name" v-for="channel in channels">
         <article-list :channel="channel" />
       </van-tab>
       <div slot="nav-right" class="placeholder"></div>
       <div slot="nav-right" class="hamburger-btn">
-        <i class="toutiao toutiao-gengduo"></i>
+        <i class="toutiao toutiao-gengduo" @click="isHanburgershow"></i>
       </div>
     </van-tabs>
     <!-- 频道列表 -->
+    <!-- 频道列表编辑开始 -->
+    <van-popup v-model="isChannelEditShow" closeable position="bottom" :style="{ height: '100%' }"
+      close-icon-position="top-left">
+      <channel-edit :my-channels="channels" :active="active" @channels-active="onUpdateActive"></channel-edit>
+    </van-popup>
+    <!-- 频道列表编辑结束 -->
   </div>
 </template>
 <script>
 import { getUserChannels } from '@/api/user'
+import ChannelEdit from './components/channel-edit'
 import ArticleList from '@/views/home/components/article-list'
+import { mapState } from 'vuex'
+import { getItem } from '@/utils/storage.js'
 export default {
   name: 'HomeIndex',
   components: {
-    ArticleList
+    ArticleList,
+    ChannelEdit
   },
   props: {},
   data () {
     return {
       active: 0,
-      channels: []
+      // 频道列表
+      channels: [],
+      // 控制编辑频道弹出层的显示状态
+      isChannelEditShow: false
     }
   },
-  computed: {},
+  computed: {
+    ...mapState(['user'])
+  },
   watch: {},
   created () {
     this.getChannels()
@@ -44,18 +59,50 @@ export default {
   methods: {
     async getChannels () {
       try {
-        const { data } = await getUserChannels()
-        this.channels = data.data.channels
-        console.log(this.channels)
+        let channels = []
+        // const { data } = await getUserChannels()
+        // this.channels = data.data.channels
+        // console.log(this.channels)
+        if (this.user) {
+          // 已登录
+          const { data } = await getUserChannels()
+          channels = data.data.channels
+        } else {
+          // 未登录
+          const localChannels = getItem('TOUTIAO_CHANNELS')
+          if (localChannels) {
+            channels = localChannels
+          } else {
+            const { data } = await getUserChannels()
+            channels = data.data.channels
+          }
+        }
+        this.channels = channels
       } catch (err) {
         this.$toast('获取用户频道列表失败')
       }
+    },
+    isHanburgershow () {
+      this.isChannelEditShow = true
+    },
+    onUpdateActive (index, isChennelEditShow = true) {
+      // 更新激活的频道项
+      this.active = index
+      // 关闭编辑频道弹层
+      this.isChannelEditShow = isChennelEditShow
     }
   }
 }
 </script>
 <style lang="less" scoped>
 .home-container {
+  /deep/ .van-cell-group {
+    .van-cell {
+      .van-grid-item__text {
+        margin-top: 0;
+      }
+    }
+  }
   padding-bottom: 100px;
   /deep/ .van-nav-bar__title {
     max-width: unset;
@@ -107,7 +154,7 @@ export default {
       height: 82px;
     }
     &:before {
-      content: "";
+      content: '';
       position: absolute;
       left: 0;
       width: 1px;

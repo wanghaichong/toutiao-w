@@ -51,7 +51,7 @@
     </van-grid>
     <van-cell title="消息通知" is-link />
     <van-cell title="小智同学" is-link />
-    <van-cell class="user-cell" clickable title="退出登录" @click="onLogout()" />
+    <van-cell class="user-cell" clickable title="退出登录" v-if="user" @click="onLogout()" />
   </div>
 
 </template>

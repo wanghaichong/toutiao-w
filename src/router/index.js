@@ -22,11 +22,7 @@ const routes = [
         name: 'home',
         component: () => import('@/views/home')
       },
-      {
-        path: '/wenda',
-        name: 'wenda',
-        component: () => import('@/views/wenda')
-      },
+      { path: '/wenda', name: 'wenda', component: () => import('@/views/wenda') },
       {
         path: '/shipin',
         name: 'video',

@@ -1,4 +1,3 @@
-// 文章请求模块
 import request from '@/utils/request'
 export const getAriticle = params => {
   return request({
