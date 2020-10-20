@@ -17,11 +17,11 @@
           <span class="user-t">头条</span>
         </div>
         <div class="user-to">
-          <span class="user-text">{{userInfo.fans_count}}</span>
+          <span class="user-text">{{userInfo.follow_count}}</span>
           <span class="user-t">关注</span>
         </div>
         <div class="user-to">
-          <span class="user-text">{{userInfo.follow_count}}</span>
+          <span class="user-text">{{userInfo.fans_count}}</span>
           <span class="user-t">粉丝</span>
         </div>
         <div class="user-to">
@@ -110,7 +110,7 @@ export default {
 .my-container {
   .header {
     height: 361px;
-    background: url("~@/assets/banner.png");
+    background: url('~@/assets/banner.png');
     background-size: cover;
   }
   .not-login {
