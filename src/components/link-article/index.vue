@@ -41,9 +41,9 @@ export default {
           status = 1
         }
         this.$emit('input', status)
-        this.$toast.success(status === 1 ? '点赞成功' : '点赞失败')
+        this.$toast.success(status === 1 ? '点赞成功' : '取消点赞')
       } catch (err) {
-        this.$toast.fail('失败')
+        this.$toast.fail('点赞操作失败')
       }
       this.load = false
     }

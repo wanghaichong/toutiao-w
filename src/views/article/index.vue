@@ -7,6 +7,11 @@
       </template>
     </van-nav-bar>
     <!-- /导航栏 -->
+    <!-- 评论回复 -->
+    <van-popup v-model="isReplyShow" position="bottom" :style="{ height: '90%' }">
+      <comment-reply v-if="isReplyShow" :comment="currentComment" @close="isReplyShow=false"></comment-reply>
+    </van-popup>
+    <!-- /评论回复 -->
 
     <div class="main-wrap">
       <!-- 加载中 -->
@@ -40,16 +45,23 @@
         <!-- 文章内容 -->
         <div class="article-content" v-html="article.content" ref="whc-content"></div>
         <van-divider>正文结束</van-divider>
+        <article-list :list='commentList' :commentId="article.art_id"
+          @updata-data="totalCommentCount=$event.total_count" @reply-click="onReplyClick">
+        </article-list>
         <!-- 底部区域 -->
         <div class="article-bottom">
-          <van-button class="comment-btn" type="default" round size="small">写评论</van-button>
-          <van-icon name="comment-o" info="123" color="#777" />
+          <van-button class="comment-btn" type="default" round size="small" @click="showBox">写评论</van-button>
+          <van-icon name="comment-o" :info="this.totalCommentCount" color="#777" />
           <!-- <van-icon color="#777" name="star-o" /> -->
           <collect-article v-model="article.is_collected" :whcId="article.art_id"></collect-article>
           <link-article v-model="article.attitude" :wId="article.art_id"></link-article>
           <van-icon name="share" color="#777777"></van-icon>
         </div>
         <!-- /底部区域 -->
+
+        <van-popup v-model="isShow" position="bottom">
+          <comment-post :target="article.art_id" @postt-success="onPossSuccess"></comment-post>
+        </van-popup>
       </div>
       <!-- /加载完成-文章详情 -->
 
@@ -77,12 +89,23 @@ import { ImagePreview } from 'vant'
 import FollowUser from '@/components/follow-user'
 import CollectArticle from '@/components/collect-article'
 import LinkArticle from '@/components/link-article'
+import ArticleList from '@/views/article/components/article-list'
+import CommentPost from '@/views/article/components/article-post'
+import CommentReply from '@/views/article/components/article-reply'
 export default {
   name: 'ArticleIndex',
   components: {
     FollowUser,
     CollectArticle,
-    LinkArticle
+    LinkArticle,
+    ArticleList,
+    CommentPost,
+    CommentReply
+  },
+  provide: function () {
+    return {
+      articleId: this.articleId
+    }
   },
   props: {
     articleId: {
@@ -95,7 +118,12 @@ export default {
       article: {},
       loading: true,
       errStatus: 0,
-      showBtn: false
+      showBtn: false,
+      totalCommentCount: 0,
+      isShow: false,
+      commentList: [],
+      isReplyShow: false,
+      currentComment: {}
     }
   },
   computed: {},
@@ -144,6 +172,20 @@ export default {
         }
       })
       console.log(images)
+    },
+    showBox () {
+      this.isShow = true
+    },
+    onPossSuccess (data) {
+      // 关闭弹出层
+      this.isShow = false
+      // 将发布内容显示到列表顶部
+      this.commentList.unshift(data.new_obj)
+    },
+    onReplyClick (lists) {
+      this.currentComment = lists
+      console.log(lists)
+      this.isReplyShow = true
     }
   }
 }

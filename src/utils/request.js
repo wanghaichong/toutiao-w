@@ -3,7 +3,7 @@ import store from '@/store'
 import JSONBig from 'json-bigint'
 const request = axios.create({
   baseURL: 'http://ttapi.research.itcast.cn/',
-  transformResponent: [function (data) {
+  transformResponse: [function (data) {
     try {
       return JSONBig.parse(data)
     } catch (err) {
