@@ -8,7 +8,7 @@
           <span class="user-s">{{userInfo.name}}</span>
         </div>
         <div class="right">
-          <van-button round type="default" size="mini" class="user-b">编辑资料</van-button>
+          <van-button round type="default" size="mini" class="user-b" to="/user/profile">编辑资料</van-button>
         </div>
       </div>
       <div class="user-button">
@@ -53,14 +53,14 @@
     <van-cell title="小智同学" is-link />
     <van-cell class="user-cell" clickable title="退出登录" v-if="user" @click="onLogout()" />
   </div>
-
 </template>
 <script>
 import { mapState } from 'vuex'
 import { getUserInfo } from '@/api/user'
 export default {
   name: 'MyIndex',
-  components: {},
+  components: {
+  },
   props: {},
   data () {
     return {
@@ -102,6 +102,8 @@ export default {
       } catch (err) {
         this.$toast('获取数据失败，请稍后重试')
       }
+    },
+    upProfile () {
     }
   }
 }

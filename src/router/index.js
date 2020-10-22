@@ -22,6 +22,11 @@ const routes = [
     props: true
   },
   {
+    path: '/user/profile',
+    name: 'userprofile',
+    component: () => import('@/views/user-profile')
+  },
+  {
     path: '/',
     // 如果父路由又默认子路由，那么name就没有意义
     // name: 'LayoutIndex',
